@@ -1,45 +1,44 @@
-import tkinter as tk
+board = [' ' for _ in range(9)]
 
-def on_click(event):
-    text = event.widget.cget("text")
+def print_board():
+    print('-------------')
+    print('| ' + board[0] + ' | ' + board[1] + ' | ' + board[2] + ' |')
+    print('-------------')
+    print('| ' + board[3] + ' | ' + board[4] + ' | ' + board[5] + ' |')
+    print('-------------')
+    print('| ' + board[6] + ' | ' + board[7] + ' | ' + board[8] + ' |')
+    print('-------------')
 
-    if text == "=":
-        try:
-            result = eval(entry.get())
-            entry.delete(0, tk.END)
-            entry.insert(tk.END, str(result))
-        except Exception as e:
-            entry.delete(0, tk.END)
-            entry.insert(tk.END, "Error")
-    elif text == "C":
-        entry.delete(0, tk.END)
-    else:
-        entry.insert(tk.END, text)
+def check_win(player):
+    for i in range(0, 9, 3):
+        if board[i] == board[i+1] == board[i+2] == player:
+            return True
+    for i in range(3):
+        if board[i] == board[i+3] == board[i+6] == player:
+            return True
+    if board[0] == board[4] == board[8] == player:
+        return True
+    if board[2] == board[4] == board[6] == player:
+        return True
+    return False
 
-root = tk.Tk()
-root["bg"]="black"
-
-entry = tk.Entry(root, width=30, borderwidth=5)
-entry.grid(row=0, column=0, columnspan=4, padx=10, pady=10)
-
-tugmalar = [
-    "7", "8", "9", "/",
-    "4", "5", "6", "*",
-    "1", "2", "3", "-",
-    "C", "0", "=", "+"
-]
-
-row = 1
-col = 0
-for tugma in tugmalar:
-    btn = tk.Button(root, text=tugma, padx=20, pady=10,bg="white")
-    btn.grid(row=row, column=col, padx=5, pady=5)
-
-    btn.bind("<Button-1>", on_click)
-
-    col += 1
-    if col > 3:
-        col = 0
-        row += 1
-
-root.mainloop()
+def uyin():
+    current_player = 'X'
+    while True:
+        print_board()
+        position = int(input("Raqam bilan belgilang(1-9): ")) - 1
+        if board[position] == ' ':
+            board[position] = current_player
+            if check_win(current_player):
+                print_board()
+                print(f"{current_player} uyinchi yutdi!")
+                break
+            elif ' ' not in board:
+                print_board()
+                print("Durrang")
+                break
+            else:
+                current_player = 'O' if current_player == 'X' else 'X'
+        else:
+            print("Notugri belgilash, qayta urining!")
+uyin()
